@@ -370,8 +370,8 @@
 }
 
 .copy-code-btn.copied {
-  opacity: 1;
-  color: var(--foreground);
-  border-color: var(--foreground);
-  background-color: var(--accent);
+  opacity: 1 !important;
+  color: var(--foreground) !important;
+  border-color: var(--foreground) !important;
+  background-color: var(--accent) !important;
 }

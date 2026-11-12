@@ -38,10 +38,14 @@ export default function CodeBlockCopy() {
             copyIcon.style.display = "none";
             checkIcon.style.display = "block";
             btn.classList.add("copied");
+            btn.style.color = "var(--foreground)";
+            btn.style.borderColor = "var(--foreground)";
             setTimeout(() => {
               copyIcon.style.display = "block";
               checkIcon.style.display = "none";
               btn.classList.remove("copied");
+              btn.style.color = "";
+              btn.style.borderColor = "";
             }, 2000);
           }
         } catch {

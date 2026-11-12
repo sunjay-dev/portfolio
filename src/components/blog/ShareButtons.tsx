@@ -57,14 +57,18 @@ export default function ShareButtons({ title, url }: Props) {
       <button
         onClick={handleCopy}
         type="button"
-        className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2.5 text-xs transition-colors ${
+          copied
+            ? "border-foreground/30 bg-accent text-foreground"
+            : "border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground"
+        }`}
       >
         {copied ? (
           <>
-            <svg className="size-3 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="size-3 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
-            <span className="text-green-500 font-medium">Copied!</span>
+            <span className="text-foreground font-medium">Copied!</span>
           </>
         ) : (
           <>
