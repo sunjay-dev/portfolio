@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { posts } from "@/lib/content";
 import User from "@/data/user.json";
+import fs from "fs";
+import path from "path";
 
 export const alt = "Blog Post OpenGraph Image";
 export const size = {
@@ -35,6 +37,17 @@ export default async function Image({ params }: Props) {
   const date = post?.date ? formatDate(post.date) : "";
   const tags = post?.tags?.slice(0, 3) ?? [];
 
+  let avatarDataUri = "";
+  try {
+    const avatarPath = path.join(process.cwd(), "public/img/me.png");
+    if (fs.existsSync(avatarPath)) {
+      const buffer = fs.readFileSync(avatarPath);
+      avatarDataUri = `data:image/png;base64,${buffer.toString("base64")}`;
+    }
+  } catch {
+    avatarDataUri = "";
+  }
+
   return new ImageResponse(
     (
       <div
@@ -44,29 +57,39 @@ export default async function Image({ params }: Props) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#0d1117",
-          padding: "70px 80px",
+          backgroundColor: "#000000",
+          padding: "68px 80px",
           fontFamily: "sans-serif",
-          color: "#f0f6fc",
+          color: "#ffffff",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Subtle background glow */}
         <div
           style={{
             position: "absolute",
-            top: "-150px",
-            right: "-150px",
-            width: "500px",
-            height: "500px",
+            top: "-160px",
+            right: "-120px",
+            width: "560px",
+            height: "560px",
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(0, 0, 0, 0) 70%)",
+            background: "radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, rgba(0, 0, 0, 0) 70%)",
             display: "flex",
           }}
         />
 
-        {/* Top bar: Site & author branding */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "1px",
+            background: "linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 30%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.3) 70%, transparent 100%)",
+            display: "flex",
+          }}
+        />
+
         <div
           style={{
             display: "flex",
@@ -79,36 +102,69 @@ export default async function Image({ params }: Props) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "14px",
+              gap: "18px",
             }}
           >
-            <div
-              style={{
-                width: "44px",
-                height: "44px",
-                borderRadius: "50%",
-                background: "#38bdf8",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#0d1117",
-                fontWeight: 700,
-                fontSize: "20px",
-              }}
-            >
-              {User.name.charAt(0)}
-            </div>
+            {avatarDataUri ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={avatarDataUri}
+                alt={User.name}
+                style={{
+                  width: "56px",
+                  height: "56px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "1.5px solid rgba(255, 255, 255, 0.4)",
+                  boxShadow: "0 0 20px rgba(255, 255, 255, 0.12)",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: "56px",
+                  height: "56px",
+                  borderRadius: "50%",
+                  backgroundColor: "#ffffff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#000000",
+                  fontWeight: 800,
+                  fontSize: "24px",
+                }}
+              >
+                {User.name.charAt(0)}
+              </div>
+            )}
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
+                gap: "2px",
               }}
             >
-              <div style={{ display: "flex", fontSize: "24px", fontWeight: 700, color: "#ffffff" }}>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: "24px",
+                  fontWeight: 800,
+                  color: "#ffffff",
+                  letterSpacing: "-0.02em",
+                }}
+              >
                 {User.name}
               </div>
-              <div style={{ display: "flex", fontSize: "16px", color: "#8b949e" }}>
-                sunjay.xyz/blog
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#a1a1aa",
+                  letterSpacing: "0.01em",
+                }}
+              >
+                sunjay.xyz / blog
               </div>
             </div>
           </div>
@@ -117,12 +173,13 @@ export default async function Image({ params }: Props) {
             <div
               style={{
                 display: "flex",
-                fontSize: "18px",
-                color: "#8b949e",
-                backgroundColor: "#161b22",
-                padding: "8px 18px",
-                borderRadius: "20px",
-                border: "1px solid #30363d",
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "#d4d4d8",
+                backgroundColor: "#18181b",
+                padding: "8px 20px",
+                borderRadius: "9999px",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
               }}
             >
               {date}
@@ -130,13 +187,12 @@ export default async function Image({ params }: Props) {
           ) : null}
         </div>
 
-        {/* Center: Post title */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             gap: "20px",
-            margin: "40px 0",
+            margin: "30px 0",
           }}
         >
           <div
@@ -144,8 +200,8 @@ export default async function Image({ params }: Props) {
               display: "flex",
               fontSize: title.length > 55 ? "50px" : "62px",
               fontWeight: 800,
-              lineHeight: 1.15,
-              letterSpacing: "-0.03em",
+              lineHeight: 1.18,
+              letterSpacing: "-0.035em",
               color: "#ffffff",
             }}
           >
@@ -153,31 +209,38 @@ export default async function Image({ params }: Props) {
           </div>
         </div>
 
-        {/* Bottom bar: Tags */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "12px",
+            width: "100%",
           }}
         >
-          {tags.map((tag) => (
-            <div
-              key={tag}
-              style={{
-                display: "flex",
-                fontSize: "16px",
-                fontWeight: 600,
-                color: "#79c0ff",
-                backgroundColor: "rgba(56, 139, 253, 0.15)",
-                border: "1px solid rgba(56, 139, 253, 0.4)",
-                padding: "6px 16px",
-                borderRadius: "8px",
-              }}
-            >
-              #{tag}
-            </div>
-          ))}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                style={{
+                  display: "flex",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "#e4e4e7",
+                  backgroundColor: "#18181b",
+                  border: "1px solid rgba(255, 255, 255, 0.16)",
+                  padding: "6px 16px",
+                  borderRadius: "8px",
+                }}
+              >
+                #{tag}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     ),

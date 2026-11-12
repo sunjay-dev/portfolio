@@ -4,10 +4,11 @@ import Icon from "@/components/ui/Icon";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import User from "@/data/user.json";
 import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
+import BlogFooter from "@/components/blog/BlogFooter";
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen bg-background text-foreground flex flex-col justify-between">
       {/* Subtle top animated grid pattern matching homepage */}
       <div
         className="absolute inset-x-0 top-0 z-0 h-32 overflow-hidden pointer-events-none"
@@ -71,8 +72,9 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
       </header>
 
       {/* Main blog content container */}
-      <div className="relative z-10 mx-auto max-w-2xl px-6 py-8 pb-24 sm:py-12">
+      <div className="relative z-10 mx-auto w-full max-w-2xl px-6 py-8 pb-16 sm:py-12 flex-1">
         {children}
+        <BlogFooter />
       </div>
     </div>
   );

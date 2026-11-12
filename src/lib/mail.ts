@@ -41,3 +41,35 @@ export async function sendemail({ email, message }: Props) {
     return { success: false };
   }
 }
+
+export async function subscribeToNewsletter(email: string) {
+  if (!process.env.RESEND_EMAIL_API_KEY) {
+    throw new Error("RESEND_EMAIL_API_KEY missing");
+  }
+
+  try {
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    const resend = getResend();
+
+    const payload: { email: string; unsubscribed: boolean; audienceId?: string } = {
+      email,
+      unsubscribed: false,
+    };
+
+    if (audienceId) {
+      payload.audienceId = audienceId;
+    }
+
+    const { error } = await resend.contacts.create(payload);
+
+    if (error) {
+      // If contact already exists or other error
+      return { success: false, message: error.message };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Resend subscribe error:", error);
+    return { success: false, message: error?.message ?? "Failed to subscribe" };
+  }
+}

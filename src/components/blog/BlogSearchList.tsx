@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import BlogPostCard from "@/components/cards/BlogPostCard";
 
 type Post = {
@@ -17,20 +19,45 @@ type Post = {
 
 type Props = {
   posts: Post[];
+  initialTag?: string;
+  mode?: "filter" | "routes";
 };
 
-export default function BlogSearchList({ posts }: Props) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+export default function BlogSearchList({ posts, initialTag, mode = "filter" }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Collect all unique tags
+  const urlTag = mode === "filter" ? searchParams.get("tag") : null;
+  const [selectedTag, setSelectedTag] = useState<string | null>(initialTag ?? urlTag ?? null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (mode === "filter") {
+      const paramTag = searchParams.get("tag");
+      setSelectedTag(paramTag || null);
+    }
+  }, [searchParams, mode]);
+
+  const handleTagClick = (tag: string | null) => {
+    setSelectedTag(tag);
+    if (mode === "filter") {
+      const params = new URLSearchParams(searchParams.toString());
+      if (tag) {
+        params.set("tag", tag);
+      } else {
+        params.delete("tag");
+      }
+      const qs = params.toString();
+      router.replace(qs ? `/blog?${qs}` : "/blog", { scroll: false });
+    }
+  };
+
   const allTags = useMemo(() => {
     const set = new Set<string>();
     posts.forEach((p) => p.tags.forEach((t) => set.add(t)));
     return Array.from(set).sort();
   }, [posts]);
 
-  // Filter posts based on search query and selected tag
   const filteredPosts = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return posts.filter((post) => {
@@ -48,7 +75,6 @@ export default function BlogSearchList({ posts }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Search Input & Tag Filter */}
       <div className="flex flex-col gap-3">
         <div className="relative">
           <input
@@ -71,23 +97,53 @@ export default function BlogSearchList({ posts }: Props) {
 
         {allTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <button
-              onClick={() => setSelectedTag(null)}
-              type="button"
-              className={`inline-flex h-6 items-center rounded-md px-2 text-xs font-medium transition-colors ${
-                selectedTag === null
-                  ? "bg-foreground text-background"
-                  : "border border-border text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              All
-            </button>
+            {mode === "routes" ? (
+              <Link
+                href="/blog"
+                className={`inline-flex h-6 items-center rounded-md px-2 text-xs font-medium transition-colors ${
+                  selectedTag === null
+                    ? "bg-foreground text-background"
+                    : "border border-border text-muted-foreground hover:text-foreground hover:bg-accent/40"
+                }`}
+              >
+                All
+              </Link>
+            ) : (
+              <button
+                onClick={() => handleTagClick(null)}
+                type="button"
+                className={`inline-flex h-6 items-center rounded-md px-2 text-xs font-medium transition-colors ${
+                  selectedTag === null
+                    ? "bg-foreground text-background"
+                    : "border border-border text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                All
+              </button>
+            )}
+
             {allTags.map((tag) => {
               const isSelected = selectedTag === tag;
+              if (mode === "routes") {
+                return (
+                  <Link
+                    key={tag}
+                    href={`/blog/tags/${tag}`}
+                    className={`inline-flex h-6 items-center rounded-md px-2 text-xs font-medium transition-colors ${
+                      isSelected
+                        ? "bg-foreground text-background"
+                        : "border border-border text-muted-foreground hover:text-foreground hover:bg-accent/40"
+                    }`}
+                  >
+                    #{tag}
+                  </Link>
+                );
+              }
+
               return (
                 <button
                   key={tag}
-                  onClick={() => setSelectedTag(isSelected ? null : tag)}
+                  onClick={() => handleTagClick(isSelected ? null : tag)}
                   type="button"
                   className={`inline-flex h-6 items-center rounded-md px-2 text-xs font-medium transition-colors ${
                     isSelected
@@ -103,7 +159,6 @@ export default function BlogSearchList({ posts }: Props) {
         )}
       </div>
 
-      {/* Results */}
       {filteredPosts.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
           No posts found matching your search.

@@ -74,42 +74,58 @@ export default async function PostPage({ params }: Props) {
   const nextPost = currentIndex - 1 >= 0 ? sortedPosts[currentIndex - 1] : null;
 
   const pageUrl = `https://sunjay.xyz/blog/${post.slugPath}`;
+  const ogImageUrl = post.cover
+    ? (post.cover.startsWith("http") ? post.cover : `https://sunjay.xyz${post.cover}`)
+    : `${pageUrl}/opengraph-image`;
 
-  // Structured Data (JSON-LD) for SEO
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: post.date,
-    author: {
-      "@type": "Person",
-      name: User.name,
-      url: "https://sunjay.xyz",
-    },
-    publisher: {
-      "@type": "Person",
-      name: User.name,
-    },
-    image: post.cover ?? `${pageUrl}/opengraph-image`,
+    dateModified: post.updated || post.date,
+    url: pageUrl,
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": pageUrl,
     },
+    image: [ogImageUrl],
+    author: {
+      "@type": "Person",
+      name: User.name,
+      url: "https://sunjay.xyz",
+      image: "https://sunjay.xyz/img/me.webp",
+      jobTitle: User.title,
+      sameAs: [
+        User.social.github.url,
+        User.social.linkedin,
+        `https://x.com/i/user/${User.social.xId}`,
+      ],
+    },
+    publisher: {
+      "@type": "Person",
+      name: User.name,
+      url: "https://sunjay.xyz",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://sunjay.xyz/img/me.webp",
+      },
+    },
+    keywords: post.tags,
+    wordCount: post.metadata?.wordCount,
+    inLanguage: "en-US",
   };
 
   return (
-    <article className="relative flex flex-col gap-8 pb-16">
+    <article className="relative flex flex-col gap-8 pb-4">
       <CodeBlockCopy />
 
-      {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Back link */}
       <Link
         href="/blog"
         className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground w-fit"
@@ -121,12 +137,15 @@ export default async function PostPage({ params }: Props) {
         <span>All posts</span>
       </Link>
 
-      {/* Post header */}
       <header className="flex flex-col gap-3">
         <h1 className="text-2xl font-bold leading-tight sm:text-3xl">{post.title}</h1>
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
+          {post.updated ? (
+            <time dateTime={post.updated}>Updated {formatDate(post.updated)}</time>
+          ) : (
+            <time dateTime={post.date}>{formatDate(post.date)}</time>
+          )}
 
           {post.metadata?.readingTime ? (
             <>
@@ -134,22 +153,6 @@ export default async function PostPage({ params }: Props) {
               <span>{post.metadata.readingTime} min read ({post.metadata.wordCount} words)</span>
             </>
           ) : null}
-
-          {post.tags.length > 0 && (
-            <>
-              <span className="text-muted-foreground/40">·</span>
-              <div className="flex flex-wrap gap-1">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex h-5 items-center rounded-md border border-border px-1.5 text-[10px] font-medium text-foreground"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </>
-          )}
         </div>
 
         {post.description && (
@@ -169,62 +172,57 @@ export default async function PostPage({ params }: Props) {
         <MDXContent code={post.body} />
       </div>
 
-      <hr className="border-border mt-8" />
+      <div className="flex flex-col gap-6 pt-8">
+        {post.tags.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground mr-1">Tags:</span>
+            {post.tags.map((tag) => (
+              <Link
+                key={tag}
+                href={`/blog/tags/${tag}`}
+                className="inline-flex h-6 items-center rounded-md border border-border bg-muted/30 px-2 text-xs font-medium text-muted-foreground transition-all hover:bg-accent hover:text-foreground"
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
+        )}
 
-      {/* Share Buttons */}
-      <ShareButtons title={post.title} url={pageUrl} />
+        <ShareButtons title={post.title} url={pageUrl} />
 
-      {/* Adjacent Posts Navigation (Next / Previous) */}
-      {(prevPost || nextPost) && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-4">
-          {prevPost ? (
-            <Link
-              href={`/blog/${prevPost.slugPath}`}
-              className="group flex flex-col gap-1 rounded-xl border border-border p-4 transition-all duration-200 hover:bg-accent/40 hover:ring-2 hover:ring-muted"
-            >
-              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                ← Older post
-              </span>
-              <span className="text-sm font-semibold text-foreground line-clamp-1 group-hover:underline">
-                {prevPost.title}
-              </span>
-            </Link>
-          ) : <div />}
+        {(prevPost || nextPost) && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-2">
+            {prevPost ? (
+              <Link
+                href={`/blog/${prevPost.slugPath}`}
+                className="group flex flex-col gap-1 rounded-xl border border-border p-4 transition-all duration-200 hover:bg-accent/40 hover:ring-2 hover:ring-muted"
+              >
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  ← Older post
+                </span>
+                <span className="text-sm font-semibold text-foreground line-clamp-1 group-hover:underline">
+                  {prevPost.title}
+                </span>
+              </Link>
+            ) : (
+              <div className="hidden sm:block" aria-hidden="true" />
+            )}
 
-          {nextPost ? (
-            <Link
-              href={`/blog/${nextPost.slugPath}`}
-              className="group flex flex-col gap-1 rounded-xl border border-border p-4 text-left transition-all duration-200 hover:bg-accent/40 hover:ring-2 hover:ring-muted sm:text-right"
-            >
-              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                Newer post →
-              </span>
-              <span className="text-sm font-semibold text-foreground line-clamp-1 group-hover:underline">
-                {nextPost.title}
-              </span>
-            </Link>
-          ) : null}
-        </div>
-      )}
-
-      {/* Back to Blog footer */}
-      <div className="flex items-center justify-between border-t border-border pt-4">
-        <Link
-          href="/blog"
-          className="group inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <Icon
-            icon="lucide:arrow-left"
-            className="size-4 transition-transform group-hover:-translate-x-0.5"
-          />
-          <span>Back to all posts</span>
-        </Link>
-        <Link
-          href="/"
-          className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Portfolio home →
-        </Link>
+            {nextPost ? (
+              <Link
+                href={`/blog/${nextPost.slugPath}`}
+                className="group flex flex-col gap-1 rounded-xl border border-border p-4 text-left transition-all duration-200 hover:bg-accent/40 hover:ring-2 hover:ring-muted sm:text-right"
+              >
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Newer post →
+                </span>
+                <span className="text-sm font-semibold text-foreground line-clamp-1 group-hover:underline">
+                  {nextPost.title}
+                </span>
+              </Link>
+            ) : null}
+          </div>
+        )}
       </div>
     </article>
   );

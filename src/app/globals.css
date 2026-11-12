@@ -206,6 +206,44 @@
   text-decoration: underline;
 }
 
+/* Blog prose images, figures, and captions */
+.prose img {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose figure {
+  margin: 2rem 0;
+}
+
+.prose figcaption {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  margin-top: 0.625rem;
+}
+
+/* Enhanced blockquote styling */
+.prose blockquote {
+  border-left-width: 3px;
+  border-left-color: var(--foreground);
+  background-color: var(--muted);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 0.85rem 1.15rem;
+  font-style: normal;
+  color: var(--foreground);
+}
+
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none;
+}
+
 /* Code block container */
 [data-rehype-pretty-code-figure] {
   position: relative;

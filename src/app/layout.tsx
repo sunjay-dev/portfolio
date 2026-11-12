@@ -32,6 +32,35 @@ export const viewport = {
   initialScale: 1,
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://sunjay.xyz/#person",
+      name: User.name,
+      jobTitle: User.title,
+      url: "https://sunjay.xyz",
+      image: "https://sunjay.xyz/img/me.webp",
+      description: User.about[0],
+      email: `mailto:${User.contact.email}`,
+      sameAs: [
+        User.social.github.url,
+        User.social.linkedin,
+        `https://x.com/i/user/${User.social.xId}`,
+        User.social.leetcode,
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://sunjay.xyz/#website",
+      url: "https://sunjay.xyz",
+      name: `${User.name} - Portfolio & Blog`,
+      publisher: { "@id": "https://sunjay.xyz/#person" },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,6 +72,10 @@ export default function RootLayout({
         className={`${geist.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <ThemeInit />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         {children}
       </body>
     </html>

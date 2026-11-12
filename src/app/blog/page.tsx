@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { posts } from "@/lib/content";
 import SectionHeading from "@/components/ui/SectionHeading";
 import BlogSearchList from "@/components/blog/BlogSearchList";
@@ -53,7 +54,9 @@ export default function BlogPage() {
         </a>
       </div>
 
-      <BlogSearchList posts={published} />
+      <Suspense fallback={null}>
+        <BlogSearchList posts={published} />
+      </Suspense>
     </main>
   );
 }
