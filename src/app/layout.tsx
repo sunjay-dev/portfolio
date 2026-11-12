@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sunjay.xyz"),
   title: `${User.name} | ${User.title}`,
   description: User.about[0],
   openGraph: {

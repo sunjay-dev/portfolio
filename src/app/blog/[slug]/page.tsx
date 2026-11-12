@@ -20,9 +20,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = posts.find((p) => p.slugPath === slug);
   if (!post) return {};
+
+  const ogImages = post.cover ? [post.cover] : undefined;
+
   return {
     title: `${post.title} | Blog`,
     description: post.description,
+    openGraph: {
+      title: `${post.title} | Blog`,
+      description: post.description,
+      type: "article",
+      publishedTime: post.date,
+      ...(ogImages ? { images: ogImages } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${post.title} | Blog`,
+      description: post.description,
+      ...(ogImages ? { images: ogImages } : {}),
+    },
   };
 }
 
