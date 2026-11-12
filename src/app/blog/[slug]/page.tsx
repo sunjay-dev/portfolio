@@ -86,7 +86,7 @@ export default async function PostPage({ params }: Props) {
       <hr className="border-border" />
 
       {/* MDX body — styled with @tailwindcss/typography */}
-      <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-foreground prose-a:underline-offset-4 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-transparent prose-pre:p-0">
+      <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-foreground prose-a:underline-offset-4 prose-code:before:content-none prose-code:after:content-none">
         <MDXContent code={post.body} />
       </div>
 
