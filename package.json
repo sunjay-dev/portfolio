@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "velite --watch & next dev",
+    "dev": "next dev",
     "build": "velite build && next build",
     "start": "next start",
     "lint": "eslint",
-    "velite": "velite build"
+    "content": "velite build --watch"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
