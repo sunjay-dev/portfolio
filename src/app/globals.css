@@ -371,6 +371,7 @@
 
 .copy-code-btn.copied {
   opacity: 1;
-  color: #22c55e;
-  border-color: #22c55e;
+  color: var(--foreground);
+  border-color: var(--foreground);
+  background-color: var(--accent);
 }
