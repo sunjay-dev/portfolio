@@ -17,7 +17,7 @@
     "cn": "^0.5.0",
     "lucide-react": "^1.61.0",
     "motion": "^14.6.0",
-    "next": "16.1.6",
+    "next": "16.4.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "rehype-autolink-headings": "^7.1.0",
@@ -46,7 +46,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.4.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
