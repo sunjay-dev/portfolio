@@ -100,7 +100,7 @@ export default async function PostPage({ params }: Props) {
   };
 
   return (
-    <article className="flex flex-col gap-8 pb-16">
+    <article className="relative flex flex-col gap-8 pb-16">
       <CodeBlockCopy />
 
       {/* JSON-LD Structured Data */}
