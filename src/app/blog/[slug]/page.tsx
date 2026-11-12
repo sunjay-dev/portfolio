@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = posts.find((p) => p.slugPath === slug);
   if (!post) return {};
   return {
-    title: post.title,
+    title: `${post.title} | Blog`,
     description: post.description,
   };
 }
@@ -41,19 +41,22 @@ export default async function PostPage({ params }: Props) {
   if (!post) notFound();
 
   return (
-    <article className="flex flex-col gap-8">
+    <article className="flex flex-col gap-8 pb-16">
       {/* Back link */}
       <Link
         href="/blog"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground w-fit"
       >
-        <Icon icon="lucide:arrow-left" className="size-4" />
-        All posts
+        <Icon
+          icon="lucide:arrow-left"
+          className="size-4 transition-transform group-hover:-translate-x-0.5"
+        />
+        <span>All posts</span>
       </Link>
 
       {/* Post header */}
       <header className="flex flex-col gap-3">
-        <h1 className="text-2xl font-bold leading-tight">{post.title}</h1>
+        <h1 className="text-2xl font-bold leading-tight sm:text-3xl">{post.title}</h1>
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <time dateTime={post.date}>{formatDate(post.date)}</time>
@@ -85,6 +88,28 @@ export default async function PostPage({ params }: Props) {
       {/* MDX body — styled with @tailwindcss/typography */}
       <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-foreground prose-a:underline-offset-4 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-transparent prose-pre:p-0">
         <MDXContent code={post.body} />
+      </div>
+
+      <hr className="border-border mt-8" />
+
+      {/* Post footer navigation */}
+      <div className="flex items-center justify-between pt-2">
+        <Link
+          href="/blog"
+          className="group inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <Icon
+            icon="lucide:arrow-left"
+            className="size-4 transition-transform group-hover:-translate-x-0.5"
+          />
+          <span>Back to all posts</span>
+        </Link>
+        <Link
+          href="/"
+          className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Portfolio home →
+        </Link>
       </div>
     </article>
   );

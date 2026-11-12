@@ -3,11 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import User from "@/data/user.json";
 import ThemeInit from "@/components/ui/ThemeInit";
-import Navbar from "@/components/layouts/Navbar";
-import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
@@ -45,29 +43,10 @@ export default function RootLayout({
       >
         <ThemeInit />
 
-        {/* Animated grid background at the top (option D from /bg-variants) */}
-        <div
-          className="absolute inset-x-0 top-0 z-0 h-25 overflow-hidden pointer-events-none"
-          aria-hidden="true"
-        >
-          <AnimatedGridPattern
-            numSquares={30}
-            maxOpacity={0.1}
-            duration={3}
-            repeatDelay={0.5}
-            className="h-full w-full [mask-image:linear-gradient(to_bottom,black,transparent)]"
-          />
-        </div>
-
         {/* Main content */}
         <div className="relative z-10 mx-auto max-w-2xl px-6 py-12 pb-28 sm:py-24">
           {children}
         </div>
-
-        {/* Floating bottom navbar */}
-        <Navbar />
-
-        {/* Toast notifications */}
       </body>
     </html>
   );
