@@ -161,7 +161,9 @@ export default function BlogSearchList({ posts, initialTag, mode = "filter" }: P
 
       {filteredPosts.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          No posts found matching your search.
+          {posts.length === 0
+            ? "No posts published yet. Check back soon!"
+            : "No posts found matching your search."}
         </div>
       ) : (
         <div className="flex flex-col gap-3">
