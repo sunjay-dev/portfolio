@@ -12,7 +12,6 @@ const NAV_ITEMS = [
   { id: "education",       label: "Education",  icon: "lucide:graduation-cap", href: "#education" },
   { id: "skills",          label: "Skills",     icon: "lucide:layers",         href: "#skills" },
   { id: "projects",        label: "Projects",   icon: "lucide:folder-git-2",   href: "#projects" },
-  { id: "blog",            label: "Blog",       icon: "lucide:notebook-pen",   href: "/blog" },
   { id: "github-activity", label: "GitHub",     icon: "lucide:github",         href: "#github-activity" },
   { id: "connect",         label: "Connect",    icon: "lucide:mail",           href: "#connect" },
 ];
