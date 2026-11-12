@@ -3,6 +3,10 @@ import { posts } from "@/lib/content";
 import { MDXContent } from "@/components/MDXContent";
 import Link from "next/link";
 import Icon from "@/components/ui/Icon";
+import TableOfContents from "@/components/blog/TableOfContents";
+import CodeBlockCopy from "@/components/blog/CodeBlockCopy";
+import ShareButtons from "@/components/blog/ShareButtons";
+import User from "@/data/user.json";
 import type { Metadata } from "next";
 
 type Props = {
@@ -52,12 +56,59 @@ function formatDate(iso: string) {
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
-  const post = posts.find((p) => p.slugPath === slug && p.published);
 
-  if (!post) notFound();
+  // Sorted list of published posts (newest first)
+  const sortedPosts = posts
+    .filter((p) => p.published)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const currentIndex = sortedPosts.findIndex((p) => p.slugPath === slug);
+  if (currentIndex === -1) notFound();
+
+  const post = sortedPosts[currentIndex];
+
+  // In newest-first order:
+  // previous article (older) is at currentIndex + 1
+  // next article (newer) is at currentIndex - 1
+  const prevPost = currentIndex + 1 < sortedPosts.length ? sortedPosts[currentIndex + 1] : null;
+  const nextPost = currentIndex - 1 >= 0 ? sortedPosts[currentIndex - 1] : null;
+
+  const pageUrl = `https://sunjay.xyz/blog/${post.slugPath}`;
+
+  // Structured Data (JSON-LD) for SEO
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Person",
+      name: User.name,
+      url: "https://sunjay.xyz",
+    },
+    publisher: {
+      "@type": "Person",
+      name: User.name,
+    },
+    image: post.cover ?? `${pageUrl}/opengraph-image`,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": pageUrl,
+    },
+  };
 
   return (
     <article className="flex flex-col gap-8 pb-16">
+      <CodeBlockCopy />
+
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Back link */}
       <Link
         href="/blog"
@@ -77,6 +128,13 @@ export default async function PostPage({ params }: Props) {
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <time dateTime={post.date}>{formatDate(post.date)}</time>
 
+          {post.metadata?.readingTime ? (
+            <>
+              <span className="text-muted-foreground/40">·</span>
+              <span>{post.metadata.readingTime} min read ({post.metadata.wordCount} words)</span>
+            </>
+          ) : null}
+
           {post.tags.length > 0 && (
             <>
               <span className="text-muted-foreground/40">·</span>
@@ -86,7 +144,7 @@ export default async function PostPage({ params }: Props) {
                     key={tag}
                     className="inline-flex h-5 items-center rounded-md border border-border px-1.5 text-[10px] font-medium text-foreground"
                   >
-                    {tag}
+                    #{tag}
                   </span>
                 ))}
               </div>
@@ -99,6 +157,11 @@ export default async function PostPage({ params }: Props) {
         )}
       </header>
 
+      {/* Table of Contents if available */}
+      {post.toc && post.toc.length > 0 && (
+        <TableOfContents toc={post.toc} />
+      )}
+
       <hr className="border-border" />
 
       {/* MDX body — styled with @tailwindcss/typography */}
@@ -108,8 +171,44 @@ export default async function PostPage({ params }: Props) {
 
       <hr className="border-border mt-8" />
 
-      {/* Post footer navigation */}
-      <div className="flex items-center justify-between pt-2">
+      {/* Share Buttons */}
+      <ShareButtons title={post.title} url={pageUrl} />
+
+      {/* Adjacent Posts Navigation (Next / Previous) */}
+      {(prevPost || nextPost) && (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-4">
+          {prevPost ? (
+            <Link
+              href={`/blog/${prevPost.slugPath}`}
+              className="group flex flex-col gap-1 rounded-xl border border-border p-4 transition-all duration-200 hover:bg-accent/40 hover:ring-2 hover:ring-muted"
+            >
+              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                ← Older post
+              </span>
+              <span className="text-sm font-semibold text-foreground line-clamp-1 group-hover:underline">
+                {prevPost.title}
+              </span>
+            </Link>
+          ) : <div />}
+
+          {nextPost ? (
+            <Link
+              href={`/blog/${nextPost.slugPath}`}
+              className="group flex flex-col gap-1 rounded-xl border border-border p-4 text-left transition-all duration-200 hover:bg-accent/40 hover:ring-2 hover:ring-muted sm:text-right"
+            >
+              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Newer post →
+              </span>
+              <span className="text-sm font-semibold text-foreground line-clamp-1 group-hover:underline">
+                {nextPost.title}
+              </span>
+            </Link>
+          ) : null}
+        </div>
+      )}
+
+      {/* Back to Blog footer */}
+      <div className="flex items-center justify-between border-t border-border pt-4">
         <Link
           href="/blog"
           className="group inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"

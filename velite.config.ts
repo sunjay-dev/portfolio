@@ -15,6 +15,8 @@ const posts = defineCollection({
       tags: s.array(s.string()).default([]),
       published: s.boolean().default(true),
       cover: s.string().optional(),
+      metadata: s.metadata(),
+      toc: s.toc(),
       body: s.mdx(),
     })
     .transform((data) => ({

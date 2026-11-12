@@ -7,6 +7,10 @@ type Post = {
   description?: string;
   date: string;
   tags: string[];
+  metadata?: {
+    readingTime: number;
+    wordCount: number;
+  };
 };
 
 function formatDate(iso: string) {
@@ -39,12 +43,19 @@ export default function BlogPostCard({ post }: { post: Post }) {
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-2 mt-1">
-        <time className="text-xs text-muted-foreground">{formatDate(post.date)}</time>
+      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted-foreground">
+        <time>{formatDate(post.date)}</time>
+
+        {post.metadata?.readingTime ? (
+          <>
+            <span className="text-muted-foreground/40">·</span>
+            <span>{post.metadata.readingTime} min read</span>
+          </>
+        ) : null}
 
         {post.tags.length > 0 && (
           <>
-            <span className="text-muted-foreground/40 text-xs">·</span>
+            <span className="text-muted-foreground/40">·</span>
             <div className="flex flex-wrap gap-1">
               {post.tags.slice(0, 4).map((tag) => (
                 <span
