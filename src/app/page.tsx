@@ -13,7 +13,7 @@ import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern"
 export default function Page() {
   return (
     <>
-      {/* Animated grid background at the top (landing page) */}
+      {/* Animated grid background at the top - spans full viewport width */}
       <div
         className="absolute inset-x-0 top-0 z-0 h-25 overflow-hidden pointer-events-none"
         aria-hidden="true"
@@ -27,17 +27,20 @@ export default function Page() {
         />
       </div>
 
-      <main className="flex flex-col gap-14">
-        <Hero />
-        <About />
-        <Experience />
-        <Education />
-        <Skills />
-        <Projects />
-        <GithubActivity />
-        <Connect />
-        <Footer />
-      </main>
+      {/* Main content container */}
+      <div className="relative z-10 mx-auto max-w-2xl px-6 py-12 pb-28 sm:py-24">
+        <main className="flex flex-col gap-14">
+          <Hero />
+          <About />
+          <Experience />
+          <Education />
+          <Skills />
+          <Projects />
+          <GithubActivity />
+          <Connect />
+          <Footer />
+        </main>
+      </div>
 
       {/* Floating bottom navbar for landing page */}
       <Navbar />

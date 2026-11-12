@@ -42,11 +42,7 @@ export default function RootLayout({
         className={`${geist.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <ThemeInit />
-
-        {/* Main content */}
-        <div className="relative z-10 mx-auto max-w-2xl px-6 py-12 pb-28 sm:py-24">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );
