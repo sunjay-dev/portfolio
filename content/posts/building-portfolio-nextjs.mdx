@@ -1,0 +1,56 @@
+---
+title: "Building a Portfolio with Next.js and Tailwind CSS"
+description: "A complete walkthrough of how I built my developer portfolio using Next.js App Router, Tailwind CSS v4, and shadcn components."
+date: 2025-01-15
+tags: ["nextjs", "tailwindcss", "react", "portfolio"]
+published: true
+---
+
+## Why I Built My Own Portfolio
+
+After years of using third-party portfolio builders, I decided to roll my own. The main reasons:
+
+- **Full control** over design and performance
+- **No monthly fees** — deployed on Vercel for free
+- A great opportunity to dog-food the latest Next.js features
+
+## Stack Overview
+
+The core stack is intentionally minimal:
+
+| Layer       | Choice             |
+|-------------|-------------------|
+| Framework   | Next.js 16 (App Router) |
+| Styling     | Tailwind CSS v4   |
+| UI System   | shadcn / Base UI  |
+| Fonts       | Geist (Vercel)    |
+| Deployment  | Vercel            |
+
+## Setting Up the App Router
+
+```tsx
+// src/app/layout.tsx
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+The App Router made it trivial to co-locate server components with client ones, keeping the bundle lean.
+
+## The Animated Grid Background
+
+One of my favourite touches is the animated grid that fades in at the top of the page. It uses a canvas element with `requestAnimationFrame` and is masked with a CSS gradient so it blends smoothly into the page.
+
+## What's Next
+
+I'm planning to add:
+
+- A **blog** (this very post is the first one!)
+- A dark-mode aware **CV/Resume** export
+- **GitHub contribution graph** synced to real data
+
+Stay tuned!
