@@ -37,7 +37,7 @@ export default function BlogFooter() {
               {User.name}
             </Link>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Personal digital garden &amp; engineering notes on full-stack web development, TypeScript, and software design.
+              Documenting lessons learned, experiments, and deep-dives across the full-stack ecosystem.
             </p>
             <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
               <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
