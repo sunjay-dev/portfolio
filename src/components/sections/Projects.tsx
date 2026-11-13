@@ -1,6 +1,7 @@
 import ProjectCard from "@/components/cards/ProjectCard";
 import Icon from "@/components/ui/Icon";
 import User from "@/data/user.json";
+import { FEATURED_TOPIC } from "@/lib/github";
 
 type Repo = {
   name: string;
@@ -11,6 +12,7 @@ type Repo = {
   created_at: string;
   updated_at: string;
   full_name: string;
+  default_branch: string;
   homepage: string;
 };
 
@@ -27,10 +29,10 @@ export default async function Projects() {
     if (!res.ok) throw new Error("Failed to fetch repos");
     const repos: Repo[] = await res.json();
 
-    // Only repos tagged "include" are showcased, up to 4.
+    // Only repos tagged with the featured topic are showcased, up to 4.
     for (const repo of repos) {
       if (filtered.length >= 4) break;
-      if (!repo.fork && repo.topics?.includes("include")) filtered.push(repo);
+      if (!repo.fork && repo.topics?.includes(FEATURED_TOPIC)) filtered.push(repo);
     }
 
     // Real total across the profile — drives the meta line in the header.
@@ -85,7 +87,7 @@ export default async function Projects() {
         ) : (
           <p className="text-center text-muted-foreground text-sm">
             No projects to display yet. Make sure your GitHub repos have the{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">include</code> topic.
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{FEATURED_TOPIC}</code> topic.
           </p>
         )}
       </div>
