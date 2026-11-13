@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Icon from "@/components/ui/Icon";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* --------------------------------------------------------------------------
    1. Callout / Alert Component (info, tip, warning, danger)
@@ -205,5 +207,81 @@ export function InteractivePreview({
       </div>
       <div className="p-6 flex items-center justify-center bg-muted/10">{children}</div>
     </div>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   6. Captioned Figure / Screenshot
+   -------------------------------------------------------------------------- */
+interface FigureProps {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption?: string;
+}
+
+export function Figure({ src, alt, width, height, caption }: FigureProps) {
+  return (
+    <figure className="not-prose my-8">
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes="(max-width: 768px) 100vw, 672px"
+        className="w-full rounded-xl border border-border bg-muted/20"
+      />
+      {caption && (
+        <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Hint / inline tooltip — underlined text with a message on hover or focus
+   -------------------------------------------------------------------------- */
+interface HintProps {
+  message: string;
+  children: React.ReactNode;
+}
+
+export function Hint({ message, children }: HintProps) {
+  return (
+    <Tooltip>
+      <TooltipTrigger className="cursor-help text-inherit underline decoration-dotted underline-offset-4 decoration-muted-foreground/60 transition-colors hover:decoration-foreground">
+        {children}
+      </TooltipTrigger>
+      <TooltipContent side="top" sideOffset={6}>
+        {message}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Links — real URLs get a solid underline and open in a new tab;
+   in-page #anchors (heading autolinks, TOC) keep their existing styling
+   -------------------------------------------------------------------------- */
+export function a({ href = "", children, className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const external = /^https?:\/\//i.test(href);
+  const inPage = href.startsWith("#");
+
+  const classes = inPage
+    ? className
+    : `${className ?? ""} underline decoration-solid underline-offset-4 transition-colors hover:text-muted-foreground`.trim();
+
+  return (
+    <a
+      {...props}
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className={classes}
+    >
+      {children}
+    </a>
   );
 }
