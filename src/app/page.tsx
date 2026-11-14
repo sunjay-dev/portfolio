@@ -7,19 +7,43 @@ import Projects from "@/components/sections/Projects";
 import GithubActivity from "@/components/sections/GithubActivity";
 import Connect from "@/components/sections/Connect";
 import Footer from "@/components/layouts/Footer";
+import Navbar from "@/components/layouts/Navbar";
+import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
 
 export default function Page() {
   return (
-    <main className="flex flex-col gap-14">
-      <Hero />
-      <About />
-      <Experience />
-      <Education />
-      <Skills />
-      <Projects />
-      <GithubActivity />
-      <Connect />
-      <Footer />
-    </main>
+    <>
+      {/* Animated grid background at the top - spans full viewport width */}
+      <div
+        className="absolute inset-x-0 top-0 z-0 h-25 overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
+        <AnimatedGridPattern
+          numSquares={30}
+          maxOpacity={0.1}
+          duration={3}
+          repeatDelay={0.5}
+          className="h-full w-full [mask-image:linear-gradient(to_bottom,black,transparent)]"
+        />
+      </div>
+
+      {/* Main content container */}
+      <div className="relative z-10 mx-auto max-w-2xl px-6 py-12 pb-28 sm:py-24">
+        <main className="flex flex-col gap-14">
+          <Hero />
+          <About />
+          <Experience />
+          <Education />
+          <Skills />
+          <Projects />
+          <GithubActivity />
+          <Connect />
+          <Footer />
+        </main>
+      </div>
+
+      {/* Floating bottom navbar for landing page */}
+      <Navbar />
+    </>
   );
 }

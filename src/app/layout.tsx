@@ -3,11 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import User from "@/data/user.json";
 import ThemeInit from "@/components/ui/ThemeInit";
-import Navbar from "@/components/layouts/Navbar";
-import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
@@ -16,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sunjay.xyz"),
   title: `${User.name} | ${User.title}`,
   description: User.about[0],
   openGraph: {
@@ -33,41 +33,56 @@ export const viewport = {
   initialScale: 1,
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://sunjay.xyz/#person",
+      name: User.name,
+      jobTitle: User.title,
+      url: "https://sunjay.xyz",
+      image: "https://sunjay.xyz/img/me.webp",
+      description: User.about[0],
+      email: `mailto:${User.contact.email}`,
+      sameAs: [
+        User.social.github.url,
+        User.social.linkedin,
+        `https://x.com/i/user/${User.social.xId}`,
+        User.social.leetcode,
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://sunjay.xyz/#website",
+      url: "https://sunjay.xyz",
+      name: `${User.name} - Portfolio & Blog`,
+      publisher: { "@id": "https://sunjay.xyz/#person" },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+      className={cn("font-sans", geist.variable)}
+    >
       <body
         className={`${geist.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <ThemeInit />
-
-        {/* Animated grid background at the top (option D from /bg-variants) */}
-        <div
-          className="absolute inset-x-0 top-0 z-0 h-25 overflow-hidden pointer-events-none"
-          aria-hidden="true"
-        >
-          <AnimatedGridPattern
-            numSquares={30}
-            maxOpacity={0.1}
-            duration={3}
-            repeatDelay={0.5}
-            className="h-full w-full [mask-image:linear-gradient(to_bottom,black,transparent)]"
-          />
-        </div>
-
-        {/* Main content */}
-        <div className="relative z-10 mx-auto max-w-2xl px-6 py-12 pb-28 sm:py-24">
-          {children}
-        </div>
-
-        {/* Floating bottom navbar */}
-        <Navbar />
-
-        {/* Toast notifications */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );

@@ -5,12 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Icon from "@/components/ui/Icon";
 import { TECH_MAPPING } from "@/data/tech_mapping";
+import { getStackTags } from "@/lib/github";
 
 type Repo = {
   html_url: string;
   created_at: string;
   updated_at: string;
   full_name: string;
+  default_branch: string;
   description: string;
   topics: string[];
   name: string;
@@ -59,9 +61,10 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
 }
 
 export default function ProjectCard({ project }: { project: Repo }) {
-  const previewUrl = `https://raw.githubusercontent.com/${project.full_name}/main/assets/preview.webp`;
+  const branch = project.default_branch || "main";
+  const previewUrl = `https://raw.githubusercontent.com/${project.full_name}/${branch}/assets/preview.webp`;
   const href = project.homepage || project.html_url;
-  const tags = project.topics.filter((t) => t !== "include").slice(0, 5);
+  const tags = getStackTags(project.topics);
 
   return (
     <div className="flex cursor-pointer flex-col overflow-hidden rounded-xl border border-border transition-all duration-200 hover:ring-2 hover:ring-muted">
