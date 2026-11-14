@@ -49,16 +49,12 @@ export function Callout({ type = "info", title, children }: CalloutProps) {
   }[type];
 
   return (
-    <aside
-      className={`my-6 rounded-xl border ${config.border} ${config.bg} p-4 text-sm leading-relaxed not-prose`}
-    >
+    <aside className={`my-6 rounded-xl border ${config.border} ${config.bg} p-4 text-sm leading-relaxed not-prose`}>
       <div className={`flex items-center gap-2 font-semibold ${config.text} mb-1.5`}>
         <Icon icon={config.icon} className="size-4 shrink-0" />
         <span>{title || config.defaultTitle}</span>
       </div>
-      <div className="text-foreground/90 text-[13px] leading-relaxed [&>p]:mb-2 [&>p:last-child]:mb-0">
-        {children}
-      </div>
+      <div className="text-foreground/90 text-[13px] leading-relaxed [&>p]:mb-2 [&>p:last-child]:mb-0">{children}</div>
     </aside>
   );
 }
@@ -113,12 +109,7 @@ interface FileTreeItemProps {
   defaultOpen?: boolean;
 }
 
-export function FileTreeItem({
-  name,
-  type = "file",
-  children,
-  defaultOpen = true,
-}: FileTreeItemProps) {
+export function FileTreeItem({ name, type = "file", children, defaultOpen = true }: FileTreeItemProps) {
   const isFolder = type === "folder" || Boolean(children);
 
   if (!isFolder) {
@@ -134,16 +125,11 @@ export function FileTreeItem({
     <li className="py-0.5 text-xs not-prose">
       <details open={defaultOpen} className="group/tree">
         <summary className="flex cursor-pointer list-none items-center gap-1.5 font-medium text-foreground select-none">
-          <Icon
-            icon="lucide:chevron-down"
-            className="size-3 text-muted-foreground transition-transform group-open/tree:rotate-0 -rotate-90"
-          />
+          <Icon icon="lucide:chevron-down" className="size-3 text-muted-foreground transition-transform group-open/tree:rotate-0 -rotate-90" />
           <Icon icon="lucide:folder-git-2" className="size-3.5 text-amber-500 shrink-0" />
           <span>{name}</span>
         </summary>
-        <ul className="ml-4 mt-1 border-l border-border/80 pl-3 flex flex-col gap-0.5">
-          {children}
-        </ul>
+        <ul className="ml-4 mt-1 border-l border-border/80 pl-3 flex flex-col gap-0.5">{children}</ul>
       </details>
     </li>
   );
@@ -152,9 +138,7 @@ export function FileTreeItem({
 export function FileTree({ children }: { children: React.ReactNode }) {
   return (
     <div className="my-6 rounded-xl border border-border bg-muted/20 p-4 not-prose font-mono">
-      <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-        Project Directory
-      </div>
+      <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">Project Directory</div>
       <ul className="flex flex-col gap-1">{children}</ul>
     </div>
   );
@@ -180,23 +164,13 @@ export function StatCard({ label, value, subtext }: StatCardProps) {
 }
 
 export function StatGrid({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="my-6 grid grid-cols-2 gap-3 sm:grid-cols-3 not-prose">
-      {children}
-    </div>
-  );
+  return <div className="my-6 grid grid-cols-2 gap-3 sm:grid-cols-3 not-prose">{children}</div>;
 }
 
 /* --------------------------------------------------------------------------
    5. Interactive Live Preview / Sandbox Box
    -------------------------------------------------------------------------- */
-export function InteractivePreview({
-  title,
-  children,
-}: {
-  title?: string;
-  children: React.ReactNode;
-}) {
+export function InteractivePreview({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
     <div className="my-6 rounded-xl border border-border bg-card overflow-hidden not-prose shadow-xs">
       <div className="flex items-center justify-between border-b border-border bg-muted/40 px-3 py-2 text-xs font-medium text-muted-foreground">
@@ -219,9 +193,10 @@ interface FigureProps {
   width: number;
   height: number;
   caption?: string;
+  className?: string;
 }
 
-export function Figure({ src, alt, width, height, caption }: FigureProps) {
+export function Figure({ src, alt, width, height, caption, className }: FigureProps) {
   return (
     <figure className="not-prose my-8">
       <Image
@@ -230,13 +205,9 @@ export function Figure({ src, alt, width, height, caption }: FigureProps) {
         width={width}
         height={height}
         sizes="(max-width: 768px) 100vw, 672px"
-        className="w-full rounded-xl border border-border bg-muted/20"
+        className={`w-full rounded-xl border border-border bg-muted/20${className ? ` ${className}` : ""}`}
       />
-      {caption && (
-        <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
-          {caption}
-        </figcaption>
-      )}
+      {caption && <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">{caption}</figcaption>}
     </figure>
   );
 }
@@ -275,12 +246,7 @@ export function a({ href = "", children, className, ...props }: React.AnchorHTML
     : `${className ?? ""} underline decoration-solid underline-offset-4 transition-colors hover:text-muted-foreground`.trim();
 
   return (
-    <a
-      {...props}
-      href={href}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={classes}
-    >
+    <a {...props} href={href} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className={classes}>
       {children}
     </a>
   );

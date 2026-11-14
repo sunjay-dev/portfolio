@@ -24,7 +24,7 @@
     <text x="62" y="184">"sleek-ai"</text>
 
     <rect x="48" y="208" width="368" height="60" rx="8" fill="none" stroke="#000000" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" />
-    <text x="62" y="231" font-weight="600">"created_at" · "pushed_at"</text>
+    <text x="62" y="231" font-weight="600">"created_at" · "updated_at"</text>
     <text x="62" y="252">"2025-03-11" · "2026-11-02"</text>
 
     <rect x="48" y="276" width="368" height="60" rx="8" fill="none" stroke="#000000" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" />
